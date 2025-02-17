@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const adminSchema = new mongoose.Schema({
+const patientSchema = new mongoose.Schema({
   username: {
     type: String,
     required: [true, "Username is required"],
@@ -51,10 +51,6 @@ const adminSchema = new mongoose.Schema({
     type: String,
     maxlength: [500, "About you must be less than 500 characters long"],
   },
-  userCount: {
-    type: Number,
-    max: [100, "User count cannot exceed 100"],
-  }, // Limit on how many users can be added
   subscribedAt: {
     type: Date,
     default: Date.now,
@@ -66,8 +62,47 @@ const adminSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  dateOfBirth: {
+    type: Date,
+    required: [true, "Date of birth is required"],
+  },
+  gender: {
+    type: String,
+    enum: ["Male", "Female", "Other"],
+    required: [true, "Gender is required"],
+  },
+  medicalHistory: {
+    type: String,
+    maxlength: [1000, "Medical history must be less than 1000 characters long"],
+  },
+  emergencyContact: {
+    name: {
+      type: String,
+      required: [true, "Emergency contact name is required"],
+    },
+    phone: {
+      type: String,
+      required: [true, "Emergency contact phone number is required"],
+      match: [/^\d{10,15}$/, "Please enter a valid phone number"],
+    },
+    relationship: {
+      type: String,
+      required: [true, "Relationship with emergency contact is required"],
+    },
+  },
+  allergies: {
+    type: String,
+    maxlength: [500, "Allergies must be less than 500 characters long"],
+  },
+  currentMedications: {
+    type: String,
+    maxlength: [
+      500,
+      "Current medications must be less than 500 characters long",
+    ],
+  },
 });
 
-const Admin = mongoose.model("Admin", adminSchema);
+const Patient = mongoose.model("Patient", patientSchema);
 
-export default Admin;
+export default Patient;
