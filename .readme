@@ -1,2 +1,0 @@
- # This is the command to download eslint
- npx eslint --init

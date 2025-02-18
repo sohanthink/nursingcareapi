@@ -126,6 +126,8 @@ export const updateUser = async (req, res) => {
       emergencyContact,
       allergies,
       currentMedications,
+      oldPassword,
+      newPassword,
     } = req.body;
 
     const user = await User.findById(req.params.id);
@@ -149,6 +151,14 @@ export const updateUser = async (req, res) => {
     user.allergies = allergies || user.allergies;
     user.currentMedications = currentMedications || user.currentMedications;
 
+    if (oldPassword && newPassword) {
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Old password is incorrect" });
+      }
+      user.password = await bcrypt.hash(newPassword, 10);
+    }
+
     await user.save();
 
     res.status(200).json({ message: "User updated successfully", user });
@@ -167,7 +177,7 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    await user.remove();
+    await user.deleteOne({ _id: req.params.id });
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
