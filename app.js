@@ -6,6 +6,8 @@ import cors from "cors";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 import authRouter from "./routes/auth.routes.js";
+import adminRouter from "./routes/admin.routes.js";
+import userRouter from "./routes/user.routes.js";
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ app.use(cookieParser());
 app.use(cors());
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/user", userRouter);
 
 app.use(errorMiddleware);
 
