@@ -152,6 +152,116 @@ This documentation outlines the available endpoints for the Nursing Care API.
 - **Method:** `GET`
 - **Description:** Retrieves a list of all forms along with metadata such as the total number of forms. Each form includes its title and associated fields.
 
+#### Get Form by ID
+
+- **Endpoint:** `/form/get-form/{formId}`
+- **Method:** `GET`
+- **Description:** Retrieves a specific form by its unique ID.
+- **Response Example:**
+
+  ```json
+  {
+    "title": "Contact Information Form",
+    "fields": [
+      {
+        "label": "Phone Number",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Email Address",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Address",
+        "type": "textarea",
+        "required": false
+      }
+    ]
+  }
+  ```
+
+  #### Update Form
+
+  - **Endpoint:** `/form/update-form/{formId}`
+  - **Method:** `PUT`
+  - **Description:** Updates an existing form with new details. The `formId` parameter is used to specify which form to update.
+  - **Payload:**
+
+    ```json
+    {
+      "title": "Sexual Activity Information Form",
+      "fields": [
+        {
+          "label": "Daily sexual activity duration (in minutes)?",
+          "type": "text",
+          "required": true,
+          "_id": "67b4ad3d6d9be05c989290e2"
+        },
+        {
+          "label": "Partner gender preference (Male/Female)?",
+          "type": "text",
+          "required": true,
+          "_id": "67b4ad3d6d9be05c989290e3"
+        },
+        {
+          "label": "How many times per hour?",
+          "type": "textarea",
+          "required": false,
+          "_id": "67b4ad3d6d9be05c989290e4"
+        }
+      ]
+    }
+    ```
+
+  - **Response Example:**
+
+    ```json
+    {
+      "message": "Form updated successfully",
+      "form": {
+        "_id": "67b4ad3d6d9be05c989290e1",
+        "title": "Sexual Activity Information Form",
+        "fields": [
+          {
+            "label": "Daily sexual activity duration (in minutes)?",
+            "type": "text",
+            "required": true,
+            "_id": "67b4ad3d6d9be05c989290e2"
+          },
+          {
+            "label": "Partner gender preference (Male/Female)?",
+            "type": "text",
+            "required": true,
+            "_id": "67b4ad3d6d9be05c989290e3"
+          },
+          {
+            "label": "How many times per hour?",
+            "type": "textarea",
+            "required": false,
+            "_id": "67b4ad3d6d9be05c989290e4"
+          }
+        ],
+        "__v": 0
+      }
+    }
+    ```
+
+    #### Assign Form to Users
+
+    - **Endpoint:** `/form/asign-form`
+    - **Method:** `POST`
+    - **Description:** Assigns one or more forms to a specific user.
+    - **Payload:**
+
+      ```json
+      {
+        "userId": "string (user ID to assign forms to)",
+        "formId": ["string (form ID 1)", "string (form ID 2)", "..."]
+      }
+      ```
+
 ## Notes
 
 - For all endpoints using a user ID, ensure that the `{userId}` placeholder is replaced with the actual user identifier.

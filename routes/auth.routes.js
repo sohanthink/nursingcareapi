@@ -4,6 +4,7 @@ import { createAdmin } from "../controllers/auth.controller.js";
 
 const authRouter = Router();
 
+// admin sign in
 authRouter.post("/sign-in", signIn);
 authRouter.post("/create-admin", createAdmin);
 

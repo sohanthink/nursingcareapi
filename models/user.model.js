@@ -101,6 +101,18 @@ const userSchema = new mongoose.Schema({
       "Current medications must be less than 500 characters long",
     ],
   },
+  assignedForms: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Form",
+    },
+  ],
+  assignedEmployee: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
