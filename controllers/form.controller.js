@@ -65,7 +65,6 @@ export const updateForm = async (req, res) => {
 };
 
 // asign a form to user
-
 export const asignForm = async (req, res) => {
   try {
     const { userId, formId } = req.body;

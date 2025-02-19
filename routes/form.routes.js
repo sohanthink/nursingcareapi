@@ -6,7 +6,11 @@ import {
   updateForm,
   asignForm,
 } from "../controllers/form.controller.js";
-import { adminAuthorize } from "../middlewares/auth.middleware.js";
+import {
+  adminAuthorize,
+  userAuthorize,
+} from "../middlewares/auth.middleware.js";
+import { submitForm } from "../controllers/formSubmission.controller.js";
 
 const formRouter = Router();
 
@@ -16,5 +20,8 @@ formRouter.get("/get-form/:id", adminAuthorize, getForm);
 formRouter.put("/update-form/:id", adminAuthorize, updateForm);
 
 formRouter.post("/asign-form", adminAuthorize, asignForm);
+
+// form submit || user will submit a form what is created by admin
+formRouter.post("/submit-form", userAuthorize, submitForm);
 
 export default formRouter;

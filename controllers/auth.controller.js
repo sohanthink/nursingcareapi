@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import Admin from "../models/admin.model.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
 
 const generateToken = (user) => {
   return jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET, {
@@ -15,7 +16,7 @@ export const signIn = async (req, res) => {
 
   try {
     const { email, password } = req.body;
-    const user = await Admin.findOne({ email });
+    const user = await Admin.findOne({ email }).session(session);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -24,6 +25,7 @@ export const signIn = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
+      session.endSession();
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -36,7 +38,39 @@ export const signIn = async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    res.status(500).json({ message: "Sign in failed" });
+    res.status(500).json({ message: "Sign in failed", error: error.message });
+  }
+};
+
+export const userSignIn = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email }).session(session);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      session.endSession();
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = generateToken(user);
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({ message: "Sign in successful", user, token });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ message: "Sign in failed", error: error.message });
   }
 };
 
@@ -70,7 +104,32 @@ export const createAdmin = async (req, res) => {
   }
 };
 
-export const signOut = (req, res) => {
-  res.send("Sign out");
-  console.log("Sign out");
+export const signOut = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Perform sign out operations here
+    await session.commitTransaction();
+    session.endSession();
+
+    let token = req.headers.authorization?.split(" ")[1];
+
+    if (
+      !token ||
+      token === "null" ||
+      token === "undefined" ||
+      token === "Bearer"
+    ) {
+      return res.status(401).json({ message: "User not authorized" });
+    }
+
+    res.setHeader("Authorization", "");
+
+    res.status(200).json({ message: "Sign out successful" });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ message: "Sign out failed", error: error.message });
+  }
 };
