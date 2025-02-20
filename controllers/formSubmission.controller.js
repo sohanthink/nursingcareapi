@@ -14,8 +14,8 @@ export const submitForm = [
   },
   async (req, res) => {
     try {
-      console.log("Request Files:", req.files);
-      console.log("Request Body:", req.body);
+      //   console.log("Request Files:", req.files);
+      //   console.log("Request Body:", req.body);
 
       const { formId, data } = req.body;
       const files = req.files?.files || [];
@@ -53,3 +53,17 @@ export const submitForm = [
     }
   },
 ];
+
+export const getFormSubmissions = async (req, res) => {
+  try {
+    const formSubmissions = await FormSubmission.find();
+    const totalSubmissions = formSubmissions.length;
+    res.status(200).json({ totalSubmissions, formSubmissions });
+  } catch (error) {
+    console.error("Error getting form submissions:", error);
+    res.status(500).json({
+      message: "Failed to get form submissions",
+      error: error.message,
+    });
+  }
+};
