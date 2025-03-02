@@ -8,6 +8,8 @@ import {
 } from "../controllers/form.controller.js";
 import {
   adminAuthorize,
+  authenticate,
+  authorize,
   userAuthorize,
 } from "../middlewares/auth.middleware.js";
 import {
@@ -18,7 +20,12 @@ import {
 const formRouter = Router();
 
 formRouter.post("/create-form", adminAuthorize, createForm);
-formRouter.get("/get-forms", adminAuthorize, getForms);
+formRouter.get(
+  "/get-forms",
+  authenticate,
+  authorize(["user", "admin"]),
+  getForms
+);
 formRouter.get("/get-form/:id", adminAuthorize, getForm);
 formRouter.put("/update-form/:id", adminAuthorize, updateForm);
 

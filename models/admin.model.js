@@ -14,6 +14,11 @@ const adminSchema = new mongoose.Schema({
     unique: true,
     match: [/.+\@.+\..+/, "Please enter a valid email address"],
   },
+  role: {
+    type: String,
+    default: "admin",
+  },
+
   password: {
     type: String,
     required: [true, "Password is required"],
